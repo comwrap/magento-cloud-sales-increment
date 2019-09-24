@@ -1,0 +1,20 @@
+{
+    "name": "comwrap/magento-cloud-sales-increment",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": ["OSL-3.0",  "AFL-3.0"],
+    "description": "Comwrap CloudIncrement - module for fixing generating sales entities increments on magento cloud.",    
+    "require": {
+        "magento/framework": "^101.0.0|^102.0.0",
+        "magento/module-sales-sequence": ">=100.0.2",        
+        "magento/magento-composer-installer": "*",       
+    },   
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Comwrap\\CloudSalesIncrement\\": ""
+        }
+    }
+}
