@@ -15,7 +15,7 @@ Magento Community Edition 2.2.*|2.3.* or Magento Enterprise Edition 2.2.*|2.3.*
 ## Installation
 *	Go to your installation directory of Magento 2 and perform the following commands
 * `composer config repositories.comwrap vcs https://github.com/comwrap/magento-cloud-sales-increment`
-*	`composer comwrap/magento-cloud-sales-increment`
+*	`composer require comwrap/magento-cloud-sales-increment dev-master`
 *	`php bin/magento setup:upgrade`
 *	`php bin/magento setup:di:compile`
 *	`php bin/magento cache:clean`
