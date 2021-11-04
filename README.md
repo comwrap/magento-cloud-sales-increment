@@ -9,7 +9,7 @@ So result sequence of "increment_id" values will be: 000000001, 000000002, 00000
 
 ### Requirements
 
-Magento Open Source 2.3.*|2.4.* or Adobe Commerce 2.3.*|2.4.*
+Magento Open Source 2.3.\*|2.4.\* or Adobe Commerce 2.3.\*|2.4.\*
 
 
 ## Installation
