@@ -9,12 +9,12 @@ So result sequence of "increment_id" values will be: 000000001, 000000002, 00000
 
 ### Requirements
 
-Magento Community Edition 2.2.*|2.3.* or Magento Enterprise Edition 2.2.*|2.3.*
+Magento Open Source 2.3.\*|2.4.\* or Adobe Commerce 2.3.\*|2.4.\*
 
 
 ## Installation
 *	Go to your installation directory of Magento 2 and perform the following commands
-* `composer config repositories.comwrap vcs https://github.com/comwrap/magento-cloud-sales-increment`
+*   `composer config repositories.comwrap vcs https://github.com/comwrap/magento-cloud-sales-increment`
 *	`composer require comwrap/magento-cloud-sales-increment dev-master`
 *	`php bin/magento setup:upgrade`
 *	`php bin/magento setup:di:compile`
