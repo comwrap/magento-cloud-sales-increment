@@ -8,11 +8,17 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Sales\Api\Data\CreditmemoInterface;
+use Magento\Sales\Api\Data\InvoiceInterface;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Address as OrderAddress;
+use Magento\Sales\Model\Order\CreditmemoFactory;
 use Magento\Sales\Model\Order\Item as OrderItem;
 use Magento\Sales\Model\Order\Payment;
+use Magento\Sales\Model\Service\CreditmemoService;
+use Magento\Sales\Model\Service\InvoiceService;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
@@ -21,21 +27,34 @@ class OrderIncrementIdTest extends TestCase
 {
     private ?ResourceConnection $resourceConnection;
     private ?ObjectManagerInterface $objectManager;
+    private ?InvoiceService $invoiceService;
+    private ?CreditmemoFactory $creditMemoFactory;
+    private ?CreditmemoService $creditMemoService;
 
     /**
      * @magentoDataFixture Magento/Sales/_files/default_rollback.php
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
-    public function testOrderIdAutoincrementIs1(): void
+    public function testSalesEntityIdAutoincrementIs1(): void
     {
         $this->modifyAutoIncrementVariables();
 
         $orders = $this->createOrders();
 
-        $firstOrderId = (int) current($orders)->getIncrementId();
-        $secondOrderId = (int) next($orders)->getIncrementId();
+        $firstOrder = current($orders);
+        $secondOrder = next($orders);
 
-        $this->assertEquals(++$firstOrderId, $secondOrderId);
+        $this->assertEquals($firstOrder->getIncrementId() + 1, (int) $secondOrder->getIncrementId());
+
+        $firstInvoice = $this->createInvoice($firstOrder);
+        $secondInvoice = $this->createInvoice($secondOrder);
+
+        $this->assertEquals($firstInvoice->getIncrementId() + 1, (int) $secondInvoice->getIncrementId());
+
+        $firstCreditMemo = $this->createCreditMemo($firstOrder, $firstInvoice);
+        $secondCreditMemo = $this->createCreditMemo($secondOrder, $secondInvoice);
+
+        $this->assertEquals($firstCreditMemo->getIncrementId() + 1, (int) $secondCreditMemo->getIncrementId());
     }
 
     private function modifyAutoIncrementVariables(): void
@@ -122,9 +141,29 @@ class OrderIncrementIdTest extends TestCase
         return $orders;
     }
 
+    private function createInvoice(OrderInterface $order): InvoiceInterface
+    {
+        $invoice = $this->invoiceService->prepareInvoice($order);
+        $invoice->register();
+        $invoice->save();
+
+        return $invoice;
+    }
+
+    private function createCreditMemo(OrderInterface $order, InvoiceInterface $invoice): CreditmemoInterface
+    {
+        $creditMemo = $this->creditMemoFactory->createByOrder($order);
+        $creditMemo->setInvoice($invoice);
+
+        return $this->creditMemoService->refund($creditMemo);
+    }
+
     protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->resourceConnection = $this->objectManager->get(ResourceConnection::class);
+        $this->invoiceService = $this->objectManager->get(InvoiceService::class);
+        $this->creditMemoFactory = $this->objectManager->get(CreditmemoFactory::class);
+        $this->creditMemoService = $this->objectManager->get(CreditmemoService::class);
     }
 }
