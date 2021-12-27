@@ -5,7 +5,7 @@
     "license": ["OSL-3.0",  "AFL-3.0"],
     "description": "Comwrap CloudSalesIncrement - a module for fixing generating sales entity increments on Adobe Commerce Cloud.",
     "require": {
-        "php": "~7.4.0||~8.0.0",
+        "php": "~7.4.0",
         "magento/framework": "^103.0.0",
         "magento/module-sales-sequence": "^100.4.0",
         "magento/magento-composer-installer": "*"
